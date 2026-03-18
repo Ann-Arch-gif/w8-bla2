@@ -1,8 +1,9 @@
-import 'package:w8/services/location_service.dart';
 import 'package:w8/ui/widgets/display/bla_divider.dart';
 import 'package:flutter/material.dart';
 
 import '../../../model/ride/locations.dart';
+import '../../../repositories/locations_repository.dart';
+import '../../providers/repositories_provider.dart';
 import '../../theme/theme.dart';
 
 ///
@@ -19,6 +20,7 @@ class BlaLocationPicker extends StatefulWidget {
 
 class _BlaLocationPickerState extends State<BlaLocationPicker> {
   String currentSearchText = "";
+  List<Location> _allLocations = [];
 
   void onTap(Location location) {
     Navigator.pop<Location>(context, location);
@@ -38,6 +40,17 @@ class _BlaLocationPickerState extends State<BlaLocationPicker> {
         currentSearchText = widget.initLocation!.name;
       });
     }
+
+    _loadLocations();
+  }
+
+  Future<void> _loadLocations() async {
+    final LocationsRepository repo =
+        RepositoriesProvider.of(context).locationsRepository;
+    final locations = await repo.getLocations();
+    setState(() {
+      _allLocations = locations;
+    });
   }
 
   void onSearchChanged(String search) {
@@ -50,7 +63,7 @@ class _BlaLocationPickerState extends State<BlaLocationPicker> {
     if (currentSearchText.length < 2) {
       return [];
     }
-    return LocationsService.availableLocations
+    return _allLocations
         .where(
           (location) => location.name.toUpperCase().contains(
             currentSearchText.toUpperCase(),

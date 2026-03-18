@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:w8/ui/theme/theme.dart';
 import 'package:w8/ui/screens/home/home_screen.dart';
+import 'package:w8/ui/providers/repositories_provider.dart';
 import 'repositories/locations_repository.dart';
 import 'repositories/rides_repository.dart';
 import 'repositories/ride_preference_repository.dart';
@@ -37,10 +38,15 @@ class BlaBlaApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      theme: blaTheme,
-      home: Scaffold(body: HomeScreen()),
+    return RepositoriesProvider(
+      locationsRepository: locationsRepository,
+      ridesRepository: ridesRepository,
+      ridePreferenceRepository: ridePreferenceRepository,
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        theme: blaTheme,
+        home: Scaffold(body: HomeScreen()),
+      ),
     );
   }
 }
